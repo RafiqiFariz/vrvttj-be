@@ -75,12 +75,6 @@ class DanceTypeController extends Controller
     {
         abort_if(Gate::denies('dance_type_delete'), Response::HTTP_FORBIDDEN, 'Forbidden');
 
-        if ($danceType->danceMoves()->exists()) {
-            return response()->json([
-                "message" => "Dance type cannot be deleted because it has dance moves",
-            ], Response::HTTP_FORBIDDEN);
-        }
-
         $danceType->delete();
         return response()->json([
             "message" => "Dance type deleted successfully",
