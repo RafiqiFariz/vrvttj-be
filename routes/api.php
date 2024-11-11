@@ -7,9 +7,13 @@ use App\Http\Controllers\API\V1\DancePartController;
 use App\Http\Controllers\API\V1\DanceTypeController;
 use App\Http\Controllers\API\V1\LecturerController;
 use App\Http\Controllers\API\V1\PermissionController;
-use App\Http\Controllers\API\V1\QuizAnswerController;
+use App\Http\Controllers\API\V1\QuizAttemptController;
+use App\Http\Controllers\API\V1\QuizOptionController;
 use App\Http\Controllers\API\V1\QuizController;
+use App\Http\Controllers\API\V1\QuizQuestionController;
+use App\Http\Controllers\API\V1\QuizResultController;
 use App\Http\Controllers\API\V1\RoleController;
+use App\Http\Controllers\API\V1\StudentAnswerController;
 use App\Http\Controllers\API\V1\StudentController;
 use App\Http\Controllers\API\V1\UploadImageController;
 use App\Http\Controllers\API\V1\UserController;
@@ -26,7 +30,11 @@ Route::group(['prefix' => 'v1'], function () {
             'lecturers' => LecturerController::class,
             'students' => StudentController::class,
             'quizzes' => QuizController::class,
-            'quiz-answers' => QuizAnswerController::class,
+            'quiz-questions' => QuizQuestionController::class,
+            'quiz-options' => QuizOptionController::class,
+            'quiz-attempts' => QuizAttemptController::class,
+            'quiz-results' => QuizResultController::class,
+            'student-answers' => StudentAnswerController::class,
             'permissions' => PermissionController::class,
             'roles' => RoleController::class,
             'users' => UserController::class,

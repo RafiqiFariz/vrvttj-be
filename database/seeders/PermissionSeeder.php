@@ -64,12 +64,40 @@ class PermissionSeeder extends Seeder
             ['name' => 'quiz_delete'],
             ['name' => 'quiz_show'],
 
-            // Quiz Answer Management
-            ['name' => 'quiz_answer_access'],
-            ['name' => 'quiz_answer_create'],
-            ['name' => 'quiz_answer_update'],
-            ['name' => 'quiz_answer_delete'],
-            ['name' => 'quiz_answer_show'],
+            // Quiz Question Management
+            ['name' => 'quiz_question_access'],
+            ['name' => 'quiz_question_create'],
+            ['name' => 'quiz_question_update'],
+            ['name' => 'quiz_question_delete'],
+            ['name' => 'quiz_question_show'],
+
+            // Quiz Option Management
+            ['name' => 'quiz_option_access'],
+            ['name' => 'quiz_option_create'],
+            ['name' => 'quiz_option_update'],
+            ['name' => 'quiz_option_delete'],
+            ['name' => 'quiz_option_show'],
+
+            // Quiz Attempt Management
+            ['name' => 'quiz_attempt_access'],
+            ['name' => 'quiz_attempt_create'],
+            ['name' => 'quiz_attempt_update'],
+            ['name' => 'quiz_attempt_delete'],
+            ['name' => 'quiz_attempt_show'],
+
+            // Quiz Student Answer Management
+            ['name' => 'quiz_student_answer_access'],
+            ['name' => 'quiz_student_answer_create'],
+            ['name' => 'quiz_student_answer_update'],
+            ['name' => 'quiz_student_answer_delete'],
+            ['name' => 'quiz_student_answer_show'],
+
+            // Quiz Result Management
+            ['name' => 'quiz_result_access'],
+            ['name' => 'quiz_result_create'],
+            ['name' => 'quiz_result_update'],
+            ['name' => 'quiz_result_delete'],
+            ['name' => 'quiz_result_show'],
 
             // Role Management
             ['name' => 'role_access'],

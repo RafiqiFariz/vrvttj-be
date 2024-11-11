@@ -5,14 +5,14 @@ namespace App\Http\Requests\V1;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Gate;
 
-class QuizAnswerRequest extends FormRequest
+class QuizOptionRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return Gate::allows(['quiz_answer_create', 'quiz_answer_update']);
+        return Gate::allows(['quiz_option_create', 'quiz_option_update']);
     }
 
     /**
@@ -23,11 +23,9 @@ class QuizAnswerRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'student_id' => 'required|exists:students,id',
-            'quiz_id' => 'required|exists:quizzes,id',
+            'quiz_question_id' => 'required|exists:quiz_questions,id',
             'answer' => 'required|string',
             'is_correct' => 'nullable|boolean',
-            'score' => 'nullable|integer',
         ];
     }
 }

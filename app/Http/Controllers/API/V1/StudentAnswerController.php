@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\API\V1;
 
-use App\Models\Part;
+use App\Http\Controllers\Controller;
+use App\Models\StudentAnswer;
 use Illuminate\Http\Request;
 
-class PartController extends Controller
+class StudentAnswerController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -34,7 +35,7 @@ class PartController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Part $part)
+    public function show(StudentAnswer $studentAnswer)
     {
         //
     }
@@ -42,7 +43,7 @@ class PartController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Part $part)
+    public function edit(StudentAnswer $studentAnswer)
     {
         //
     }
@@ -50,7 +51,7 @@ class PartController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Part $part)
+    public function update(Request $request, StudentAnswer $studentAnswer)
     {
         //
     }
@@ -58,7 +59,7 @@ class PartController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Part $part)
+    public function destroy(StudentAnswer $studentAnswer)
     {
         //
     }

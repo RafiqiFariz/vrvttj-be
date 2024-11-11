@@ -27,18 +27,24 @@ class PermissionRoleSeeder extends Seeder
         $ignoredPrefixes = [
             'user_create', 'user_delete', 'user_restore',
             'role_', 'permission_', 'lecturer_create', 'lecturer_destroy',
+            'dance_create', 'dance_update', 'dance_delete',
+            'dance_type_create', 'dance_type_update', 'dance_type_delete',
+            'dance_part_create', 'dance_part_update', 'dance_part_delete',
+            'dance_cloth_create', 'dance_cloth_update', 'dance_cloth_delete',
+            'dance_move_create', 'dance_move_update', 'dance_move_delete',
         ];
 
         $lecturerPermissions = $this->filterPermissions($permissions, $ignoredPrefixes);
         Role::findOrFail(2)->permissions()->sync($lecturerPermissions->pluck('id'));
 
         $ignoredPrefixes = [
-            'user_create', 'user_delete', 'user_restore',
+            'user_', 'role_', 'permission_', 'lecturer_',
+            'dance_create', 'dance_update', 'dance_delete',
             'dance_type_create', 'dance_type_update', 'dance_type_delete',
             'dance_part_create', 'dance_part_update', 'dance_part_delete',
             'dance_cloth_create', 'dance_cloth_update', 'dance_cloth_delete',
+            'dance_move_create', 'dance_move_update', 'dance_move_delete',
             'student_create', 'student_delete', 'student_edit',
-            'role_', 'permission_', 'lecturer_',
         ];
 
         $studentPermissions = $this->filterPermissions($permissions, $ignoredPrefixes);
