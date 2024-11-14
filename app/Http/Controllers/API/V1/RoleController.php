@@ -4,7 +4,6 @@ namespace App\Http\Controllers\API\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\V1\RoleRequest;
-use App\Http\Resources\V1\RoleCollection;
 use App\Http\Resources\V1\RoleResource;
 use App\Models\Role;
 use Illuminate\Http\Request;
@@ -15,7 +14,7 @@ class RoleController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request): RoleCollection
+    public function index(Request $request): \Illuminate\Http\Resources\Json\AnonymousResourceCollection
     {
         $includePermissions = $request->query('includePermissions');
 
@@ -25,7 +24,7 @@ class RoleController extends Controller
             $roles = $roles->with(['permissions']);
         }
 
-        return new RoleCollection($roles->paginate(20)->appends($request->query()));
+        return RoleResource::collection($roles->paginate(20)->appends($request->query()));
     }
 
     /**

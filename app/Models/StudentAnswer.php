@@ -8,17 +8,17 @@ class StudentAnswer extends Model
 {
     protected $guarded = [];
 
-    public function attempt(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function quizAttempt(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(QuizAttempt::class);
     }
 
-    public function question(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function quizQuestion(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(QuizQuestion::class);
     }
 
-    public function option(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function quizOption(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(QuizOption::class);
     }

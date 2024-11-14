@@ -22,6 +22,14 @@ class PermissionSeeder extends Seeder
             ['name' => 'user_restore'],
             ['name' => 'user_show'],
 
+            // Student Management
+            ['name' => 'student_access'],
+            ['name' => 'student_create'],
+            ['name' => 'student_update'],
+            ['name' => 'student_delete'],
+            ['name' => 'student_restore'],
+            ['name' => 'student_show'],
+
             // Dance Type Management
             ['name' => 'dance_type_access'],
             ['name' => 'dance_type_create'],
@@ -86,11 +94,11 @@ class PermissionSeeder extends Seeder
             ['name' => 'quiz_attempt_show'],
 
             // Quiz Student Answer Management
-            ['name' => 'quiz_student_answer_access'],
-            ['name' => 'quiz_student_answer_create'],
-            ['name' => 'quiz_student_answer_update'],
-            ['name' => 'quiz_student_answer_delete'],
-            ['name' => 'quiz_student_answer_show'],
+            ['name' => 'student_answer_access'],
+            ['name' => 'student_answer_create'],
+            ['name' => 'student_answer_update'],
+            ['name' => 'student_answer_delete'],
+            ['name' => 'student_answer_show'],
 
             // Quiz Result Management
             ['name' => 'quiz_result_access'],

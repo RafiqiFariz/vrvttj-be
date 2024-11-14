@@ -6,9 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class QuizOption extends Model
 {
-    protected $guarded = [];
+    protected $fillable = ['quiz_question_id', 'answer', 'is_correct'];
 
-    public function question(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function quizQuestion(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(QuizQuestion::class);
     }

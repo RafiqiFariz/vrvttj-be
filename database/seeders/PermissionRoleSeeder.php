@@ -32,6 +32,9 @@ class PermissionRoleSeeder extends Seeder
             'dance_part_create', 'dance_part_update', 'dance_part_delete',
             'dance_cloth_create', 'dance_cloth_update', 'dance_cloth_delete',
             'dance_move_create', 'dance_move_update', 'dance_move_delete',
+            'student_create', 'student_delete', 'student_edit',
+            'quiz_attempt_create', 'quiz_attempt_update', 'quiz_attempt_delete',
+            'student_result_create', 'student_result_update', 'student_result_delete',
         ];
 
         $lecturerPermissions = $this->filterPermissions($permissions, $ignoredPrefixes);
@@ -45,6 +48,8 @@ class PermissionRoleSeeder extends Seeder
             'dance_cloth_create', 'dance_cloth_update', 'dance_cloth_delete',
             'dance_move_create', 'dance_move_update', 'dance_move_delete',
             'student_create', 'student_delete', 'student_edit',
+            'quiz_attempt_update', 'quiz_attempt_delete',
+            'student_result_update', 'student_result_delete',
         ];
 
         $studentPermissions = $this->filterPermissions($permissions, $ignoredPrefixes);

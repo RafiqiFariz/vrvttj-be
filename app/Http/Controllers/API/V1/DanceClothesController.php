@@ -5,10 +5,11 @@ namespace App\Http\Controllers\API\V1;
 use App\Filters\V1\DanceClothsFilter;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\V1\DanceClothesRequest;
-use App\Http\Resources\V1\DanceClothesCollection;
 use App\Http\Resources\V1\DanceClothesResource;
 use App\Models\DanceClothes;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -19,7 +20,7 @@ class DanceClothesController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request): DanceClothesCollection
+    public function index(Request $request): AnonymousResourceCollection
     {
         abort_if(Gate::denies('dance_cloth_access'), Response::HTTP_FORBIDDEN, 'Forbidden');
 
@@ -32,21 +33,21 @@ class DanceClothesController extends Controller
 
         $danceClothes = DanceClothes::where($filterItems);
 
-        if ($paginate == 'false' || $paginate == '0') {
-            return new DanceClothesCollection($danceClothes->get());
-        }
-
         if ($includeDance) {
             $danceClothes = $danceClothes->with(['dance']);
         }
 
-        return new DanceClothesCollection($danceClothes->paginate($pageSize)->appends($request->query()));
+        if ($paginate == 'false' || $paginate == '0') {
+            return DanceClothesResource::collection($danceClothes->get());
+        }
+
+        return DanceClothesResource::collection($danceClothes->paginate($pageSize)->appends($request->query()));
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(DanceClothesRequest $request): \Illuminate\Http\JsonResponse
+    public function store(DanceClothesRequest $request): JsonResponse
     {
         $danceCloth = DanceClothes::create($request->except(['picture', 'asset_path']));
 
@@ -78,7 +79,7 @@ class DanceClothesController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(DanceClothesRequest $request, DanceClothes $danceCloth): \Illuminate\Http\JsonResponse
+    public function update(DanceClothesRequest $request, DanceClothes $danceCloth): JsonResponse
     {
         $danceCloth->update($request->except(['picture', 'asset_path']));
 
@@ -103,7 +104,7 @@ class DanceClothesController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(DanceClothes $danceCloth): \Illuminate\Http\JsonResponse
+    public function destroy(DanceClothes $danceCloth): JsonResponse
     {
         abort_if(Gate::denies('dance_cloth_delete'), Response::HTTP_FORBIDDEN, 'Forbidden');
 

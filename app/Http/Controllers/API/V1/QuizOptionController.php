@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers\API\V1;
 
-use App\Filters\V1\QuizAnswersFilter;
+use App\Filters\V1\QuizOptionsFilter;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\V1\QuizOptionRequest;
-use App\Http\Resources\V1\QuizOptionCollection;
 use App\Http\Resources\V1\QuizOptionResource;
 use App\Models\QuizOption;
 use Illuminate\Http\Request;
@@ -17,11 +16,11 @@ class QuizOptionController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request): QuizOptionCollection
+    public function index(Request $request): \Illuminate\Http\Resources\Json\AnonymousResourceCollection
     {
         abort_if(Gate::denies('quiz_option_access'), Response::HTTP_FORBIDDEN, 'Forbidden');
 
-        $filter = new QuizAnswersFilter();
+        $filter = new QuizOptionsFilter();
         $filterItems = $filter->transform($request); // [['column', 'operator', 'value']]
 
         $paginate = $request->query('paginate');
@@ -30,15 +29,15 @@ class QuizOptionController extends Controller
 
         $quizOptions = QuizOption::where($filterItems);
 
-        if ($paginate == 'false' || $paginate == '0') {
-            return new QuizOptionCollection($quizOptions->get());
-        }
-
         if ($includeQuizQuestion == 'true' || $includeQuizQuestion == '1') {
-            $quizOptions = $quizOptions->with('quiz');
+            $quizOptions = $quizOptions->with('quizQuestion');
         }
 
-        return new QuizOptionCollection($quizOptions->paginate($pageSize)->appends($request->query()));
+        if ($paginate == 'false' || $paginate == '0') {
+            return QuizOptionResource::collection($quizOptions->get());
+        }
+
+        return QuizOptionResource::collection($quizOptions->paginate($pageSize)->appends($request->query()));
     }
 
     /**
@@ -49,7 +48,7 @@ class QuizOptionController extends Controller
         $quizOption = QuizOption::create($request->all());
         return response()->json([
             "message" => "Quiz option created successfully",
-            "data" => $quizOption,
+            "data" => new QuizOptionResource($quizOption),
         ]);
     }
 
@@ -58,6 +57,12 @@ class QuizOptionController extends Controller
      */
     public function show(QuizOption $quizOption): QuizOptionResource
     {
+        $includeQuizQuestion = request()->query('includeQuizQuestion');
+
+        if ($includeQuizQuestion) {
+            return new QuizOptionResource($quizOption->loadMissing('quizQuestion'));
+        }
+
         return new QuizOptionResource($quizOption);
     }
 
@@ -70,7 +75,7 @@ class QuizOptionController extends Controller
 
         return response()->json([
             "message" => "Quiz option $quizOption->id updated successfully",
-            "data" => $quizOption,
+            "data" => new QuizOptionResource($quizOption),
         ]);
     }
 

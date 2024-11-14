@@ -5,7 +5,6 @@ namespace App\Http\Controllers\API\V1;
 use App\Filters\V1\QuizzesFilter;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\V1\QuizRequest;
-use App\Http\Resources\V1\QuizCollection;
 use App\Http\Resources\V1\QuizResource;
 use App\Models\Quiz;
 use Illuminate\Http\Request;
@@ -17,7 +16,7 @@ class QuizController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request): QuizCollection
+    public function index(Request $request): \Illuminate\Http\Resources\Json\AnonymousResourceCollection
     {
         abort_if(Gate::denies('quiz_access'), Response::HTTP_FORBIDDEN, 'Forbidden');
 
@@ -30,10 +29,10 @@ class QuizController extends Controller
         $quizzes = Quiz::where($filterItems);
 
         if ($paginate == 'false' || $paginate == '0') {
-            return new QuizCollection($quizzes->get());
+            return QuizResource::collection($quizzes->get());
         }
 
-        return new QuizCollection($quizzes->paginate($pageSize)->appends($request->query()));
+        return QuizResource::collection($quizzes->paginate($pageSize)->appends($request->query()));
     }
 
     /**
@@ -44,7 +43,7 @@ class QuizController extends Controller
         $quiz = Quiz::create($request->all());
         return response()->json([
             "message" => "Quiz created successfully",
-            "data" => $quiz,
+            "data" => new QuizResource($quiz),
         ]);
     }
 
@@ -65,7 +64,7 @@ class QuizController extends Controller
 
         return response()->json([
             "message" => "Quiz $quiz->id updated successfully",
-            "data" => $quiz,
+            "data" => new QuizResource($quiz),
         ]);
     }
 

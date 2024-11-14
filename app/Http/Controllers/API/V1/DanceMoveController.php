@@ -5,9 +5,11 @@ namespace App\Http\Controllers\API\V1;
 use App\Filters\V1\DanceMovesFilter;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\V1\DanceMoveRequest;
-use App\Http\Resources\V1\DanceMoveCollection;
+use App\Http\Resources\V1\DanceMoveResource;
 use App\Models\DanceMove;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,7 +19,7 @@ class DanceMoveController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request): DanceMoveCollection
+    public function index(Request $request): AnonymousResourceCollection
     {
         abort_if(Gate::denies('dance_move_access'), Response::HTTP_FORBIDDEN, 'Forbidden');
 
@@ -41,16 +43,16 @@ class DanceMoveController extends Controller
         }
 
         if ($paginate == 'false' || $paginate == '0') {
-            return new DanceMoveCollection($danceMoves->get());
+            return DanceMoveResource::collection($danceMoves->get());
         }
 
-        return new DanceMoveCollection($danceMoves->paginate($pageSize)->appends($request->query()));
+        return DanceMoveResource::collection($danceMoves->paginate($pageSize)->appends($request->query()));
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(DanceMoveRequest $request): \Illuminate\Http\JsonResponse
+    public function store(DanceMoveRequest $request): JsonResponse
     {
         $danceMove = DanceMove::create($request->except('picture'));
 
@@ -61,22 +63,22 @@ class DanceMoveController extends Controller
 
         return response()->json([
             "message" => "Dance move created successfully",
-            "data" => $danceMove,
+            "data" => new DanceMoveResource($danceMove),
         ]);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(DanceMove $danceMove): DanceMoveCollection
+    public function show(DanceMove $danceMove): DanceMoveResource
     {
-        return new DanceMoveCollection($danceMove->load(['danceType', 'dancePart']));
+        return new DanceMoveResource($danceMove->load(['danceType', 'dancePart']));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(DanceMoveRequest $request, DanceMove $danceMove): \Illuminate\Http\JsonResponse
+    public function update(DanceMoveRequest $request, DanceMove $danceMove): JsonResponse
     {
         $danceMove->update($request->except('picture'));
 
@@ -88,14 +90,14 @@ class DanceMoveController extends Controller
 
         return response()->json([
             "message" => "Dance move updated successfully",
-            "data" => $danceMove,
+            "data" => new DanceMoveResource($danceMove),
         ]);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(DanceMove $danceMove): \Illuminate\Http\JsonResponse
+    public function destroy(DanceMove $danceMove): JsonResponse
     {
         abort_if(Gate::denies('dance_move_delete'), Response::HTTP_FORBIDDEN, 'Forbidden');
 

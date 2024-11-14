@@ -4,7 +4,7 @@ namespace App\Filters\V1;
 
 use App\Filters\APIFilter;
 
-class QuizAnswersFilter extends APIFilter
+class QuizOptionsFilter extends APIFilter
 {
     protected array $safeParams = [
         'is_correct' => ['eq', 'ne'],

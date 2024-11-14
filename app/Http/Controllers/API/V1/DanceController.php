@@ -5,10 +5,11 @@ namespace App\Http\Controllers\API\V1;
 use App\Filters\V1\DancesFilter;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\V1\DanceRequest;
-use App\Http\Resources\V1\DanceCollection;
 use App\Http\Resources\V1\DanceResource;
 use App\Models\Dance;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,7 +19,7 @@ class DanceController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request): DanceCollection
+    public function index(Request $request): AnonymousResourceCollection
     {
         abort_if(Gate::denies('dance_access'), Response::HTTP_FORBIDDEN, 'Forbidden');
 
@@ -28,30 +29,30 @@ class DanceController extends Controller
         $paginate = $request->query('paginate');
         $pageSize = $request->query('pageSize', 20);
 
-        $danceParts = Dance::where($filterItems);
+        $dances = Dance::where($filterItems);
 
         if ($paginate == 'false' || $paginate == '0') {
-            return new DanceCollection($danceParts->get());
+            return DanceResource::collection($dances->get());
         }
 
-        return new DanceCollection($danceParts->paginate($pageSize)->appends($request->query()));
+        return DanceResource::collection($dances->paginate($pageSize)->appends($request->query()));
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(DanceRequest $request)
+    public function store(DanceRequest $request): JsonResponse
     {
-        $dancePart = Dance::create($request->except('picture'));
+        $dance = Dance::create($request->except('picture'));
 
         if ($request->hasFile('picture')) {
             $path = $request->file('picture')->store('dances', 'public');
-            $dancePart->update(['picture' => $path]);
+            $dance->update(['picture' => $path]);
         }
 
         return response()->json([
             "message" => "Dance created successfully",
-            "data" => $dancePart,
+            "data" => new DanceResource($dance),
         ]);
     }
 
@@ -66,28 +67,28 @@ class DanceController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Dance $dance): \Illuminate\Http\JsonResponse
+    public function update(Request $request, Dance $dance): JsonResponse
     {
-        $dancePart = Dance::create($request->except('picture'));
+        $dance->update($request->except('picture'));
 
         if ($request->hasFile('picture')) {
-            if ($dancePart->picture) {
-                Storage::disk('public')->delete($dancePart->picture);
+            if ($dance->picture) {
+                Storage::disk('public')->delete($dance->picture);
             }
             $path = $request->file('picture')->store('dances', 'public');
-            $dancePart->update(['picture' => $path]);
+            $dance->update(['picture' => $path]);
         }
 
         return response()->json([
             "message" => "Dance created successfully",
-            "data" => $dancePart,
+            "data" => new DanceResource($dance),
         ]);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Dance $dance): \Illuminate\Http\JsonResponse
+    public function destroy(Dance $dance): JsonResponse
     {
         abort_if(Gate::denies('dance_delete'), Response::HTTP_FORBIDDEN, 'Forbidden');
 

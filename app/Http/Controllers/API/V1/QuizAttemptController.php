@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers\API\V1;
 
-use App\Filters\V1\QuizAnswersFilter;
+use App\Filters\V1\QuizAttemptsFilter;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\V1\QuizAttemptRequest;
-use App\Http\Resources\V1\QuizAttemptCollection;
 use App\Http\Resources\V1\QuizAttemptResource;
 use App\Models\QuizAttempt;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Gate;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -17,39 +18,44 @@ class QuizAttemptController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request): QuizAttemptCollection
+    public function index(Request $request): AnonymousResourceCollection
     {
         abort_if(Gate::denies('quiz_attempt_access'), Response::HTTP_FORBIDDEN, 'Forbidden');
 
-        $filter = new QuizAnswersFilter();
+        $filter = new QuizAttemptsFilter();
         $filterItems = $filter->transform($request); // [['column', 'operator', 'value']]
 
         $paginate = $request->query('paginate');
         $pageSize = $request->query('pageSize', 20);
-        $includeQuizQuestion = $request->query('includeQuizQuestion', 'false');
+        $includeQuiz = $request->query('includeQuiz', 'false');
+        $includeStudent = $request->query('includeStudent', 'false');
 
-        $quizOptions = QuizAttempt::where($filterItems);
+        $quizAttempts = QuizAttempt::where($filterItems);
+
+        if ($includeQuiz == 'true' || $includeQuiz == '1') {
+            $quizAttempts = $quizAttempts->with('quiz');
+        }
+
+        if ($includeStudent == 'true' || $includeStudent == '1') {
+            $quizAttempts = $quizAttempts->with('student');
+        }
 
         if ($paginate == 'false' || $paginate == '0') {
-            return new QuizAttemptCollection($quizOptions->get());
+            return QuizAttemptResource::collection($quizAttempts->get());
         }
 
-        if ($includeQuizQuestion == 'true' || $includeQuizQuestion == '1') {
-            $quizOptions = $quizOptions->with('quiz');
-        }
-
-        return new QuizAttemptCollection($quizOptions->paginate($pageSize)->appends($request->query()));
+        return QuizAttemptResource::collection($quizAttempts->paginate($pageSize)->appends($request->query()));
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(QuizAttemptRequest $request): \Illuminate\Http\JsonResponse
+    public function store(QuizAttemptRequest $request): JsonResponse
     {
         $quizAttempt = QuizAttempt::create($request->all());
         return response()->json([
             "message" => "Quiz attempt created successfully",
-            "data" => $quizAttempt,
+            "data" => new QuizAttemptResource($quizAttempt),
         ]);
     }
 
@@ -58,6 +64,17 @@ class QuizAttemptController extends Controller
      */
     public function show(QuizAttempt $quizAttempt): QuizAttemptResource
     {
+        $includeQuiz = request()->query('includeQuiz');
+        $includeStudent = request()->query('includeStudent');
+
+        if ($includeQuiz == 'true' || $includeQuiz == '1') {
+            $quizAttempt = $quizAttempt->loadMissing('quiz');
+        }
+
+        if ($includeStudent == 'true' || $includeStudent == '1') {
+            $quizAttempt = $quizAttempt->loadMissing('student');
+        }
+
         return new QuizAttemptResource($quizAttempt);
     }
 
@@ -70,7 +87,7 @@ class QuizAttemptController extends Controller
 
         return response()->json([
             "message" => "Quiz attempt $quizAttempt->id updated successfully",
-            "data" => $quizAttempt,
+            "data" => new QuizAttemptResource($quizAttempt),
         ]);
     }
 

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class QuizQuestion extends Model
 {
-    protected $guarded = [];
+    protected $fillable = ['quiz_id', 'question', 'weight'];
 
     public function quiz(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {

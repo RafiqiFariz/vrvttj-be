@@ -5,10 +5,11 @@ namespace App\Http\Controllers\API\V1;
 use App\Filters\V1\DanceTypesFilter;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\V1\DanceTypeRequest;
-use App\Http\Resources\V1\DanceTypeCollection;
 use App\Http\Resources\V1\DanceTypeResource;
 use App\Models\DanceType;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Gate;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -17,7 +18,7 @@ class DanceTypeController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request): DanceTypeCollection
+    public function index(Request $request): AnonymousResourceCollection
     {
         abort_if(Gate::denies('dance_type_access'), Response::HTTP_FORBIDDEN, 'Forbidden');
 
@@ -30,16 +31,16 @@ class DanceTypeController extends Controller
         $danceTypes = DanceType::where($filterItems);
 
         if ($paginate == 'false' || $paginate == '0') {
-            return new DanceTypeCollection($danceTypes->get());
+            return DanceTypeResource::collection($danceTypes->get());
         }
 
-        return new DanceTypeCollection($danceTypes->paginate($pageSize)->appends($request->query()));
+        return DanceTypeResource::collection($danceTypes->paginate($pageSize)->appends($request->query()));
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(DanceTypeRequest $request): \Illuminate\Http\JsonResponse
+    public function store(DanceTypeRequest $request): JsonResponse
     {
         $danceType = DanceType::create($request->all());
         return response()->json([
@@ -59,7 +60,7 @@ class DanceTypeController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(DanceTypeRequest $request, DanceType $danceType): \Illuminate\Http\JsonResponse
+    public function update(DanceTypeRequest $request, DanceType $danceType): JsonResponse
     {
         $danceType->update($request->all());
         return response()->json([
@@ -71,7 +72,7 @@ class DanceTypeController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(DanceType $danceType): \Illuminate\Http\JsonResponse
+    public function destroy(DanceType $danceType): JsonResponse
     {
         abort_if(Gate::denies('dance_type_delete'), Response::HTTP_FORBIDDEN, 'Forbidden');
 

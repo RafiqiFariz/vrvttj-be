@@ -5,10 +5,11 @@ namespace App\Http\Controllers\API\V1;
 use App\Filters\V1\DancePartsFilter;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\V1\DancePartRequest;
-use App\Http\Resources\V1\DancePartCollection;
 use App\Http\Resources\V1\DancePartResource;
 use App\Models\DancePart;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,7 +19,7 @@ class DancePartController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request): DancePartCollection
+    public function index(Request $request): AnonymousResourceCollection
     {
         abort_if(Gate::denies('dance_part_access'), Response::HTTP_FORBIDDEN, 'Forbidden');
 
@@ -31,16 +32,16 @@ class DancePartController extends Controller
         $danceParts = DancePart::where($filterItems);
 
         if ($paginate == 'false' || $paginate == '0') {
-            return new DancePartCollection($danceParts->get());
+            return DancePartResource::collection($danceParts->get());
         }
 
-        return new DancePartCollection($danceParts->paginate($pageSize)->appends($request->query()));
+        return DancePartResource::collection($danceParts->paginate($pageSize)->appends($request->query()));
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(DancePartRequest $request): \Illuminate\Http\JsonResponse
+    public function store(DancePartRequest $request): JsonResponse
     {
         $dancePart = DancePart::create($request->except('picture'));
 
@@ -51,7 +52,7 @@ class DancePartController extends Controller
 
         return response()->json([
             "message" => "Dance part created successfully",
-            "data" => $dancePart,
+            "data" => new DancePartResource($dancePart),
         ]);
     }
 
@@ -66,7 +67,7 @@ class DancePartController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(DancePartRequest $request, DancePart $dancePart): \Illuminate\Http\JsonResponse
+    public function update(DancePartRequest $request, DancePart $dancePart): JsonResponse
     {
         $dancePart->update($request->except('picture'));
 
@@ -87,7 +88,7 @@ class DancePartController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(DancePart $dancePart): \Illuminate\Http\JsonResponse
+    public function destroy(DancePart $dancePart): JsonResponse
     {
         abort_if(Gate::denies('dance_part_delete'), Response::HTTP_FORBIDDEN, 'Forbidden');
 

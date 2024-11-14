@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Student extends Model
 {
-    protected $guarded = [];
+    protected $fillable = ['nim', 'created_at', 'updated_at'];
 
     public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {

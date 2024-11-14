@@ -4,10 +4,10 @@ namespace App\Http\Controllers\API\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\V1\PermissionRequest;
-use App\Http\Resources\V1\PermissionCollection;
 use App\Http\Resources\V1\PermissionResource;
 use App\Models\Permission;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Gate;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -16,12 +16,12 @@ class PermissionController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request): PermissionCollection
+    public function index(Request $request): AnonymousResourceCollection
     {
         abort_if(Gate::denies('permission_access'), Response::HTTP_FORBIDDEN, 'Forbidden');
 
         $pageSize = $request->query('pageSize', 20);
-        return new PermissionCollection(Permission::paginate($pageSize)->appends($request->query()));
+        return PermissionResource::collection(Permission::paginate($pageSize)->appends($request->query()));
     }
 
     /**
@@ -32,7 +32,7 @@ class PermissionController extends Controller
         $permission = Permission::create($request->all());
         return response()->json([
             "message" => "Permission created successfully",
-            "data" => $permission,
+            "data" => new PermissionResource($permission),
         ]);
     }
 
@@ -53,6 +53,7 @@ class PermissionController extends Controller
         $permission->update($request->all());
         return response()->json([
             "message" => "Permission $permission->id updated successfully",
+            "data" => new PermissionResource($permission),
         ]);
     }
 

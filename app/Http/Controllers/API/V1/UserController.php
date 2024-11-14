@@ -19,7 +19,7 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request): UserCollection
+    public function index(Request $request): \Illuminate\Http\Resources\Json\AnonymousResourceCollection
     {
         abort_if(Gate::denies('user_access'), Response::HTTP_FORBIDDEN, 'Forbidden');
 
@@ -37,10 +37,10 @@ class UserController extends Controller
         }
 
         if ($paginate == 'false' || $paginate == '0') {
-            return new UserCollection($users->get());
+            return UserResource::collection($users->get());
         }
 
-        return new UserCollection($users->paginate($pageSize)->appends($request->query()));
+        return UserResource::collection($users->paginate($pageSize)->appends($request->query()));
     }
 
     /**
