@@ -92,13 +92,14 @@ class UserController extends Controller
     {
         if (!empty($request->password)) {
             $request['password'] = bcrypt($request->password);
+            $user->update(["password" => $request->password]);
         }
 
         if ($request->photo !== $user->photo && !empty($user->photo) && !empty($request->photo)) {
             Storage::disk('public')->delete($user->photo);
         }
 
-        $user->update($request->except('nrp', 'nim'));
+        $user->update($request->except('password', 'nrp', 'nim'));
 
         if ($request->old_role_id === 2 && $user->role_id === 2) {
             // Jika peran lama dan baru adalah 'lecturer', update NRP

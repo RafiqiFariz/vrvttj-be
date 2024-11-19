@@ -8,7 +8,7 @@ Route::get('/', function () {
 });
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+    return $request->user()->load('role');
 });
 
 require __DIR__.'/auth.php';

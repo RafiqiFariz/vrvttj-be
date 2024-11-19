@@ -5,6 +5,7 @@ use App\Http\Controllers\API\V1\DanceController;
 use App\Http\Controllers\API\V1\DanceMoveController;
 use App\Http\Controllers\API\V1\DancePartController;
 use App\Http\Controllers\API\V1\DanceTypeController;
+use App\Http\Controllers\API\V1\DashboardController;
 use App\Http\Controllers\API\V1\LecturerController;
 use App\Http\Controllers\API\V1\PermissionController;
 use App\Http\Controllers\API\V1\QuizAttemptController;
@@ -21,6 +22,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::group(['prefix' => 'v1'], function () {
     Route::group(['middleware' => ['auth:sanctum']], function () {
+        Route::get('dashboard', DashboardController::class)->name('dashboard');
         Route::apiResources([
             'dances' => DanceController::class,
             'dance-types' => DanceTypeController::class,

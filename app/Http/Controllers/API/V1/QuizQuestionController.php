@@ -86,6 +86,12 @@ class QuizQuestionController extends Controller
         // Ambil data options dari request
         $optionsData = $request->input('options', []);
 
+        // Dapatkan semua id dari options dalam request
+        $optionIdsInRequest = collect($optionsData)->pluck('id')->filter()->all(); // Ambil id yang ada dan bukan null
+
+        // Hapus options yang tidak ada dalam request
+        $quizQuestion->options()->whereNotIn('id', $optionIdsInRequest)->delete();
+
         // Pisahkan antara option yang ada id (update) dan yang tidak ada id (insert)
         $upsertData = [];
         foreach ($optionsData as $option) {
