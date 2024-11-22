@@ -2,17 +2,19 @@
 
 namespace App\Http\Requests\V1;
 
+use App\Traits\RequestSourceHandler;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Gate;
 
 class UserStoreRequest extends FormRequest
 {
+    use RequestSourceHandler;
+
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return Gate::allows('user_create');
+        return $this->authorizeRequest($this->request, 'user_create');
     }
 
     /**

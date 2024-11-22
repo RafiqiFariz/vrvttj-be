@@ -6,22 +6,21 @@ use App\Filters\V1\UsersFilter;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\V1\UserStoreRequest;
 use App\Http\Requests\V1\UserUpdateRequest;
-use App\Http\Resources\V1\UserCollection;
 use App\Http\Resources\V1\UserResource;
 use App\Models\User;
+use App\Traits\RequestSourceHandler;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
-use Symfony\Component\HttpFoundation\Response;
 
 class UserController extends Controller
 {
+    use RequestSourceHandler;
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request): \Illuminate\Http\Resources\Json\AnonymousResourceCollection
     {
-        abort_if(Gate::denies('user_access'), Response::HTTP_FORBIDDEN, 'Forbidden');
+        $this->authorizeRequest($request, 'user_access');
 
         $filter = new UsersFilter();
         $filterItems = $filter->transform($request); // [['column', 'operator', 'value']]
@@ -130,7 +129,7 @@ class UserController extends Controller
      */
     public function destroy(User $user): \Illuminate\Http\JsonResponse
     {
-        abort_if(Gate::denies('user_delete'), Response::HTTP_FORBIDDEN, 'Forbidden');
+        $this->authorizeRequest(request(), 'user_delete');
 
         Storage::disk('public')->delete($user->photo);
         $user->delete();

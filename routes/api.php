@@ -18,7 +18,11 @@ use App\Http\Controllers\API\V1\StudentAnswerController;
 use App\Http\Controllers\API\V1\StudentController;
 use App\Http\Controllers\API\V1\UploadImageController;
 use App\Http\Controllers\API\V1\UserController;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Validation\ValidationException;
 
 Route::group(['prefix' => 'v1'], function () {
     Route::group(['middleware' => ['auth:sanctum']], function () {
@@ -45,3 +49,32 @@ Route::group(['prefix' => 'v1'], function () {
         Route::post('upload', [UploadImageController::class, 'upload']);
     });
 });
+
+Route::post('/sanctum/token', function (Request $request) {
+    $request->validate([
+        'email' => 'required|email',
+        'password' => 'required',
+        'device_name' => 'required',
+    ]);
+
+    $user = User::where('email', $request->email)->first();
+
+    if (!$user || !Hash::check($request->password, $user->password)) {
+        throw ValidationException::withMessages([
+            'email' => ['The provided credentials are incorrect.'],
+        ]);
+    }
+
+    return [
+        'token' => $user->createToken(
+            $request->device_name,
+            $user->role->permissions->pluck('name')->all()
+        )->plainTextToken,
+    ];
+});
+
+Route::post('/logout', function (Request $request) {
+    $request->user()->tokens()->delete();
+
+    return response()->json(['message' => 'Logged out']);
+})->middleware('auth:sanctum');
