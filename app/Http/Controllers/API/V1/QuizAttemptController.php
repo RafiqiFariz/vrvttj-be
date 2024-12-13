@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\V1\QuizAttemptRequest;
 use App\Http\Resources\V1\QuizAttemptResource;
 use App\Models\QuizAttempt;
+use App\Traits\RequestSourceHandler;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -15,12 +16,13 @@ use Symfony\Component\HttpFoundation\Response;
 
 class QuizAttemptController extends Controller
 {
+    use RequestSourceHandler;
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request): AnonymousResourceCollection
     {
-        abort_if(Gate::denies('quiz_attempt_access'), Response::HTTP_FORBIDDEN, 'Forbidden');
+       $this->authorizeRequest($request, 'quiz_attempt_access');
 
         $filter = new QuizAttemptsFilter();
         $filterItems = $filter->transform($request); // [['column', 'operator', 'value']]
@@ -64,6 +66,8 @@ class QuizAttemptController extends Controller
      */
     public function show(QuizAttempt $quizAttempt): QuizAttemptResource
     {
+        $this->authorizeRequest(request(), 'quiz_attempt_show');
+
         $includeQuiz = request()->query('includeQuiz');
         $includeStudent = request()->query('includeStudent');
 

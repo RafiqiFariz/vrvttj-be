@@ -2,17 +2,18 @@
 
 namespace App\Http\Requests\V1;
 
+use App\Traits\RequestSourceHandler;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Gate;
 
 class StudentAnswerRequest extends FormRequest
 {
+    use RequestSourceHandler;
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return Gate::allows(['student_answer_create', 'student_answer_update']);
+        return $this->authorizeRequest($this->request, ['student_answer_create', 'student_answer_update']);
     }
 
     /**

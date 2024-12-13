@@ -7,20 +7,20 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\V1\StudentAnswerRequest;
 use App\Http\Resources\V1\StudentAnswerResource;
 use App\Models\StudentAnswer;
+use App\Traits\RequestSourceHandler;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\Support\Facades\Gate;
-use Symfony\Component\HttpFoundation\Response;
 
 class StudentAnswerController extends Controller
 {
+    use RequestSourceHandler;
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request): AnonymousResourceCollection
     {
-        abort_if(Gate::denies('student_answer_access'), Response::HTTP_FORBIDDEN, 'Forbidden');
+        $this->authorizeRequest($request, 'student_answer_access');
 
         $filter = new StudentAnswersFilter();
         $filterItems = $filter->transform($request); // [['column', 'operator', 'value']]
@@ -69,6 +69,7 @@ class StudentAnswerController extends Controller
      */
     public function show(StudentAnswer $studentAnswer): StudentAnswerResource
     {
+        $this->authorizeRequest(request(), 'student_answer_show');
         return new StudentAnswerResource($studentAnswer);
     }
 
@@ -90,7 +91,7 @@ class StudentAnswerController extends Controller
      */
     public function destroy(StudentAnswer $studentAnswer): JsonResponse
     {
-        abort_if(Gate::denies('student_answer_delete'), Response::HTTP_FORBIDDEN, 'Forbidden');
+        $this->authorizeRequest(request(), 'student_answer_delete');
 
         $studentAnswer->delete();
         return response()->json([

@@ -6,20 +6,20 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\V1\QuizQuestionRequest;
 use App\Http\Resources\V1\QuizQuestionResource;
 use App\Models\QuizQuestion;
+use App\Traits\RequestSourceHandler;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\Support\Facades\Gate;
-use Symfony\Component\HttpFoundation\Response;
 
 class QuizQuestionController extends Controller
 {
+    use RequestSourceHandler;
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request): AnonymousResourceCollection
     {
-        abort_if(Gate::denies('quiz_question_access'), Response::HTTP_FORBIDDEN, 'Forbidden');
+        $this->authorizeRequest($request, 'quiz_question_access');
 
         $paginate = $request->query('paginate');
         $pageSize = $request->query('pageSize', 20);
@@ -62,6 +62,8 @@ class QuizQuestionController extends Controller
      */
     public function show(QuizQuestion $quizQuestion): QuizQuestionResource
     {
+        $this->authorizeRequest(request(), 'quiz_question_show');
+
         $includeQuiz = request()->query('includeQuiz');
         $includeOptions = request()->query('includeOptions');
 
@@ -117,7 +119,7 @@ class QuizQuestionController extends Controller
      */
     public function destroy(QuizQuestion $quizQuestion): JsonResponse
     {
-        abort_if(Gate::denies('quiz_question_delete'), Response::HTTP_FORBIDDEN, 'Forbidden');
+        $this->authorizeRequest(request(), 'quiz_question_delete');
 
         $quizQuestion->delete();
         return response()->json([

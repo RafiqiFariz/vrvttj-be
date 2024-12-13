@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\V1\PermissionRequest;
 use App\Http\Resources\V1\PermissionResource;
 use App\Models\Permission;
+use App\Traits\RequestSourceHandler;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Gate;
@@ -13,12 +14,13 @@ use Symfony\Component\HttpFoundation\Response;
 
 class PermissionController extends Controller
 {
+    use RequestSourceHandler;
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request): AnonymousResourceCollection
     {
-        abort_if(Gate::denies('permission_access'), Response::HTTP_FORBIDDEN, 'Forbidden');
+        $this->authorizeRequest($request, 'permission_access');
 
         $pageSize = $request->query('pageSize', 20);
         return PermissionResource::collection(Permission::paginate($pageSize)->appends($request->query()));
@@ -41,7 +43,7 @@ class PermissionController extends Controller
      */
     public function show(Permission $permission): PermissionResource
     {
-        abort_if(Gate::denies('permission_show'), Response::HTTP_FORBIDDEN, 'Forbidden');
+        $this->authorizeRequest(request(), 'permission_show');
         return new PermissionResource($permission);
     }
 

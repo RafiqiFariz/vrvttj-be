@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Storage;
 
 class UploadImageController extends Controller
 {
-    public function upload(Request $request)
+    public function upload(Request $request): false|string
     {
         $isTemp = is_string($request->photo) && str_starts_with($request->photo, 'storage/tmp');
 

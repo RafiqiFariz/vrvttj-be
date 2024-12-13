@@ -7,22 +7,22 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\V1\DanceClothesRequest;
 use App\Http\Resources\V1\DanceClothesResource;
 use App\Models\DanceClothes;
+use App\Traits\RequestSourceHandler;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use Symfony\Component\HttpFoundation\Response;
 
 class DanceClothesController extends Controller
 {
+    use RequestSourceHandler;
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request): AnonymousResourceCollection
     {
-        abort_if(Gate::denies('dance_cloth_access'), Response::HTTP_FORBIDDEN, 'Forbidden');
+        $this->authorizeRequest($request, 'dance_cloth_access');
 
         $filter = new DanceClothsFilter();
         $filterItems = $filter->transform($request); // [['column', 'operator', 'value']]
@@ -73,6 +73,7 @@ class DanceClothesController extends Controller
      */
     public function show(DanceClothes $danceCloth): DanceClothesResource
     {
+        $this->authorizeRequest(request(), 'dance_cloth_show');
         return new DanceClothesResource($danceCloth);
     }
 
@@ -106,7 +107,7 @@ class DanceClothesController extends Controller
      */
     public function destroy(DanceClothes $danceCloth): JsonResponse
     {
-        abort_if(Gate::denies('dance_cloth_delete'), Response::HTTP_FORBIDDEN, 'Forbidden');
+        $this->authorizeRequest(request(),'dance_cloth_delete');
 
         if ($danceCloth->picture) {
             Storage::disk('public')->delete($danceCloth->picture);

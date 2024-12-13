@@ -7,18 +7,20 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\V1\QuizOptionRequest;
 use App\Http\Resources\V1\QuizOptionResource;
 use App\Models\QuizOption;
+use App\Traits\RequestSourceHandler;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Symfony\Component\HttpFoundation\Response;
 
 class QuizOptionController extends Controller
 {
+    use RequestSourceHandler;
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request): \Illuminate\Http\Resources\Json\AnonymousResourceCollection
     {
-        abort_if(Gate::denies('quiz_option_access'), Response::HTTP_FORBIDDEN, 'Forbidden');
+        $this->authorizeRequest($request, 'quiz_option_access');
 
         $filter = new QuizOptionsFilter();
         $filterItems = $filter->transform($request); // [['column', 'operator', 'value']]
@@ -57,6 +59,8 @@ class QuizOptionController extends Controller
      */
     public function show(QuizOption $quizOption): QuizOptionResource
     {
+        $this->authorizeRequest(request(), 'quiz_option_show');
+
         $includeQuizQuestion = request()->query('includeQuizQuestion');
 
         if ($includeQuizQuestion) {

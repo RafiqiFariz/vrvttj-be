@@ -7,18 +7,18 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\V1\QuizRequest;
 use App\Http\Resources\V1\QuizResource;
 use App\Models\Quiz;
+use App\Traits\RequestSourceHandler;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Gate;
-use Symfony\Component\HttpFoundation\Response;
 
 class QuizController extends Controller
 {
+    use RequestSourceHandler;
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request): \Illuminate\Http\Resources\Json\AnonymousResourceCollection
     {
-        abort_if(Gate::denies('quiz_access'), Response::HTTP_FORBIDDEN, 'Forbidden');
+        $this->authorizeRequest($request, 'quiz_access');
 
         $filter = new QuizzesFilter();
         $filterItems = $filter->transform($request); // [['column', 'operator', 'value']]
@@ -52,6 +52,7 @@ class QuizController extends Controller
      */
     public function show(Quiz $quiz): QuizResource
     {
+        $this->authorizeRequest(request(), 'quiz_show');
         return new QuizResource($quiz);
     }
 
@@ -73,7 +74,7 @@ class QuizController extends Controller
      */
     public function destroy(Quiz $quiz): \Illuminate\Http\JsonResponse
     {
-        abort_if(Gate::denies('quiz_delete'), Response::HTTP_FORBIDDEN, 'Forbidden');
+        $this->authorizeRequest(request(), 'quiz_delete');
 
         $quiz->delete();
         return response()->json([

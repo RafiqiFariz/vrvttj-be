@@ -7,21 +7,22 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\V1\DanceRequest;
 use App\Http\Resources\V1\DanceResource;
 use App\Models\Dance;
+use App\Traits\RequestSourceHandler;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\Response;
 
 class DanceController extends Controller
 {
+    use RequestSourceHandler;
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request): AnonymousResourceCollection
     {
-        abort_if(Gate::denies('dance_access'), Response::HTTP_FORBIDDEN, 'Forbidden');
+        $this->authorizeRequest($request, 'dance_access');
 
         $filter = new DancesFilter();
         $filterItems = $filter->transform($request); // [['column', 'operator', 'value']]
@@ -61,13 +62,14 @@ class DanceController extends Controller
      */
     public function show(Dance $dance): DanceResource
     {
+        $this->authorizeRequest(request(), 'dance_show');
         return new DanceResource($dance);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Dance $dance): JsonResponse
+    public function update(DanceRequest $request, Dance $dance): JsonResponse
     {
         $dance->update($request->except('picture'));
 
@@ -90,7 +92,7 @@ class DanceController extends Controller
      */
     public function destroy(Dance $dance): JsonResponse
     {
-        abort_if(Gate::denies('dance_delete'), Response::HTTP_FORBIDDEN, 'Forbidden');
+        $this->authorizeRequest(request(), 'dance_delete');
 
         if ($dance->danceMoves()->exists()) {
             return response()->json([

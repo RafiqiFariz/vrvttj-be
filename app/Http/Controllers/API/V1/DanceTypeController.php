@@ -7,20 +7,20 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\V1\DanceTypeRequest;
 use App\Http\Resources\V1\DanceTypeResource;
 use App\Models\DanceType;
+use App\Traits\RequestSourceHandler;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\Support\Facades\Gate;
-use Symfony\Component\HttpFoundation\Response;
 
 class DanceTypeController extends Controller
 {
+    use RequestSourceHandler;
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request): AnonymousResourceCollection
     {
-        abort_if(Gate::denies('dance_type_access'), Response::HTTP_FORBIDDEN, 'Forbidden');
+        $this->authorizeRequest($request, 'dance_type_access');
 
         $filter = new DanceTypesFilter();
         $filterItems = $filter->transform($request); // [['column', 'operator', 'value']]
@@ -54,6 +54,7 @@ class DanceTypeController extends Controller
      */
     public function show(DanceType $danceType): DanceTypeResource
     {
+        $this->authorizeRequest(request(), 'dance_type_show');
         return new DanceTypeResource($danceType);
     }
 
@@ -74,7 +75,7 @@ class DanceTypeController extends Controller
      */
     public function destroy(DanceType $danceType): JsonResponse
     {
-        abort_if(Gate::denies('dance_type_delete'), Response::HTTP_FORBIDDEN, 'Forbidden');
+        $this->authorizeRequest(request(), 'dance_type_delete');
 
         $danceType->delete();
         return response()->json([

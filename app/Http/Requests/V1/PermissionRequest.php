@@ -2,17 +2,18 @@
 
 namespace App\Http\Requests\V1;
 
+use App\Traits\RequestSourceHandler;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Gate;
 
 class PermissionRequest extends FormRequest
 {
+    use RequestSourceHandler;
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return Gate::allows(['permission_create', 'permission_edit']);
+        return $this->authorizeRequest($this->request, ['permission_create', 'permission_edit']);
     }
 
     /**

@@ -7,21 +7,21 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\V1\DanceMoveRequest;
 use App\Http\Resources\V1\DanceMoveResource;
 use App\Models\DanceMove;
+use App\Traits\RequestSourceHandler;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
-use Symfony\Component\HttpFoundation\Response;
 
 class DanceMoveController extends Controller
 {
+    use RequestSourceHandler;
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request): AnonymousResourceCollection
     {
-        abort_if(Gate::denies('dance_move_access'), Response::HTTP_FORBIDDEN, 'Forbidden');
+        $this->authorizeRequest($request, 'dance_move_access');
 
         $filter = new DanceMovesFilter();
         $filterItems = $filter->transform($request); // [['column', 'operator', 'value']]
@@ -72,6 +72,7 @@ class DanceMoveController extends Controller
      */
     public function show(DanceMove $danceMove): DanceMoveResource
     {
+        $this->authorizeRequest(request(), 'dance_move_show');
         return new DanceMoveResource($danceMove->load(['danceType', 'dancePart']));
     }
 
@@ -99,7 +100,7 @@ class DanceMoveController extends Controller
      */
     public function destroy(DanceMove $danceMove): JsonResponse
     {
-        abort_if(Gate::denies('dance_move_delete'), Response::HTTP_FORBIDDEN, 'Forbidden');
+        $this->authorizeRequest(request(), 'dance_move_delete');
 
         if ($danceMove->picture) {
             Storage::disk('public')->delete($danceMove->picture);

@@ -6,16 +6,20 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\V1\RoleRequest;
 use App\Http\Resources\V1\RoleResource;
 use App\Models\Role;
+use App\Traits\RequestSourceHandler;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class RoleController extends Controller
 {
+    use RequestSourceHandler;
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request): \Illuminate\Http\Resources\Json\AnonymousResourceCollection
     {
+        $this->authorizeRequest($request, 'role_access');
+
         $includePermissions = $request->query('includePermissions');
 
         $roles = Role::query();
@@ -90,6 +94,8 @@ class RoleController extends Controller
      */
     public function destroy(Role $role): \Illuminate\Http\JsonResponse
     {
+        $this->authorizeRequest(request(), 'role_delete');
+
         $role->delete();
         return response()->json(["message" => "Role deleted successfully"]);
     }
