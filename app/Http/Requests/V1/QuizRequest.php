@@ -4,7 +4,7 @@ namespace App\Http\Requests\V1;
 
 use App\Traits\RequestSourceHandler;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Gate;
+use Illuminate\Http\Request;
 
 class QuizRequest extends FormRequest
 {
@@ -12,9 +12,9 @@ class QuizRequest extends FormRequest
     /**
      * Determine if the user is authorized to make this request.
      */
-    public function authorize(): bool
+    public function authorize(Request $request): bool
     {
-        return $this->authorizeRequest($this->request, ['quiz_create', 'quiz_update']);
+        return $this->authorizeRequest($request, ['quiz_create', 'quiz_update']);
     }
 
     /**

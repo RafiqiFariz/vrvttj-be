@@ -4,6 +4,7 @@ namespace App\Http\Requests\V1;
 
 use App\Traits\RequestSourceHandler;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Request;
 
 class StudentAnswerRequest extends FormRequest
 {
@@ -11,9 +12,9 @@ class StudentAnswerRequest extends FormRequest
     /**
      * Determine if the user is authorized to make this request.
      */
-    public function authorize(): bool
+    public function authorize(Request $request): bool
     {
-        return $this->authorizeRequest($this->request, ['student_answer_create', 'student_answer_update']);
+        return $this->authorizeRequest($request, ['student_answer_create', 'student_answer_update']);
     }
 
     /**

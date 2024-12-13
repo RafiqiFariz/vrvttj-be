@@ -4,6 +4,7 @@ namespace App\Http\Requests\V1;
 
 use App\Traits\RequestSourceHandler;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Request;
 
 class DanceTypeRequest extends FormRequest
 {
@@ -11,9 +12,9 @@ class DanceTypeRequest extends FormRequest
     /**
      * Determine if the user is authorized to make this request.
      */
-    public function authorize(): bool
+    public function authorize(Request $request): bool
     {
-        return $this->authorizeRequest($this->request, ['dance_type_create', 'dance_type_update']);
+        return $this->authorizeRequest($request, ['dance_type_create', 'dance_type_update']);
     }
 
     /**

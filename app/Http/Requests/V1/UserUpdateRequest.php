@@ -4,7 +4,7 @@ namespace App\Http\Requests\V1;
 
 use App\Traits\RequestSourceHandler;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Gate;
+use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
 class UserUpdateRequest extends FormRequest
@@ -14,9 +14,9 @@ class UserUpdateRequest extends FormRequest
     /**
      * Determine if the user is authorized to make this request.
      */
-    public function authorize(): bool
+    public function authorize(Request $request): bool
     {
-        return $this->authorizeRequest($this->request, 'user_update');
+        return $this->authorizeRequest($request, 'user_update');
     }
 
     /**
