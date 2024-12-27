@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('dance_clothes', function (Blueprint $table) {
+        Schema::create('dance_costumes', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(\App\Models\Dance::class)->constrained()->cascadeOnDelete();
             $table->string('name');
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('dance_clothes');
+        Schema::dropIfExists('dance_costumes');
     }
 };

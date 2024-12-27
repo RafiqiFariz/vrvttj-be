@@ -4,7 +4,7 @@ namespace App\Filters\V1;
 
 use App\Filters\APIFilter;
 
-class DanceClothsFilter extends APIFilter
+class DanceCostumesFilter extends APIFilter
 {
     protected array $safeParams = [
         'name' => ['eq', 'ne'],

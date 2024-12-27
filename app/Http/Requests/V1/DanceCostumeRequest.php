@@ -6,7 +6,7 @@ use App\Traits\RequestSourceHandler;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
 
-class DanceClothesRequest extends FormRequest
+class DanceCostumeRequest extends FormRequest
 {
     use RequestSourceHandler;
     /**
@@ -14,7 +14,7 @@ class DanceClothesRequest extends FormRequest
      */
     public function authorize(Request $request): bool
     {
-        return $this->authorizeRequest($request, ['dance_cloth_create', 'dance_cloth_update']);
+        return $this->authorizeRequest($request, ['dance_costume_create', 'dance_costume_update']);
     }
 
     /**

@@ -58,12 +58,12 @@ class PermissionSeeder extends Seeder
             ['name' => 'dance_move_delete'],
             ['name' => 'dance_move_show'],
 
-            // Dance Move Management
-            ['name' => 'dance_cloth_access'],
-            ['name' => 'dance_cloth_create'],
-            ['name' => 'dance_cloth_update'],
-            ['name' => 'dance_cloth_delete'],
-            ['name' => 'dance_cloth_show'],
+            // Dance Costume Management
+            ['name' => 'dance_costume_access'],
+            ['name' => 'dance_costume_create'],
+            ['name' => 'dance_costume_update'],
+            ['name' => 'dance_costume_delete'],
+            ['name' => 'dance_costume_show'],
 
             // Quiz Management
             ['name' => 'quiz_access'],

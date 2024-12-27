@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\API\V1\DanceClothesController;
+use App\Http\Controllers\API\V1\DanceCostumeController;
 use App\Http\Controllers\API\V1\DanceController;
 use App\Http\Controllers\API\V1\DanceMoveController;
 use App\Http\Controllers\API\V1\DancePartController;
@@ -32,7 +32,7 @@ Route::group(['prefix' => 'v1'], function () {
             'dance-types' => DanceTypeController::class,
             'dance-moves' => DanceMoveController::class,
             'dance-parts' => DancePartController::class,
-            'dance-clothes' => DanceClothesController::class,
+            'dance-costumes' => DanceCostumeController::class,
             'lecturers' => LecturerController::class,
             'students' => StudentController::class,
             'quizzes' => QuizController::class,

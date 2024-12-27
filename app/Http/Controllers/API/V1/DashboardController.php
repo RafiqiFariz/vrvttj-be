@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\API\V1;
 
 use App\Http\Controllers\Controller;
-use App\Models\DanceClothes;
+use App\Models\DanceCostume;
 use App\Models\DanceMove;
 use App\Models\DanceType;
 use App\Models\Student;
@@ -16,14 +16,14 @@ class DashboardController extends Controller
         $students = Student::count();
         $danceTypes = DanceType::count();
         $danceMoves = DanceMove::count();
-        $danceClothes = DanceClothes::count();
+        $danceCostumes = DanceCostume::count();
 
         return response()->json([
             'data' => [
                 'students' => $students,
                 'dance_types' => $danceTypes,
                 'dance_moves' => $danceMoves,
-                'dance_clothes' => $danceClothes,
+                'dance_costumes' => $danceCostumes,
             ],
             'status' => 'success',
         ]);

@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class DanceClothes extends Model
+class DanceCostume extends Model
 {
     protected $guarded = [];
 
