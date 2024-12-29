@@ -5,6 +5,7 @@ namespace App\Http\Requests\V1;
 use App\Traits\RequestSourceHandler;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class DanceCostumeRequest extends FormRequest
 {
@@ -27,8 +28,14 @@ class DanceCostumeRequest extends FormRequest
         $rules = [
             'name' => 'required|string|max:255',
             'dance_id' => 'required|exists:dances,id',
-            'asset_path' => 'required|file|max:102400',
-            'picture' => 'required|image|max:2048',
+            'asset_path' => [
+                'file' => Rule::requiredIf(!$this->hasFile('asset_path')),
+                'max:102400',
+            ],
+            'picture' => [
+                'image' => Rule::requiredIf(!$this->hasFile('picture')),
+                'max:2048',
+            ],
             'description' => 'nullable|string',
         ];
 
