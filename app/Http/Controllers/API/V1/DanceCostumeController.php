@@ -88,6 +88,10 @@ class DanceCostumeController extends Controller
         $danceCostume->update($request->except(['picture', 'asset_path']));
 
         if ($request->hasFile('picture')) {
+            if ($danceCostume->picture) {
+                Storage::disk('public')->delete($danceCostume->picture);
+            }
+
             $filePicture = $request->file('picture');
             $fileName = uniqid() . "-" . Str::kebab($request->name) . '.' . $filePicture->getClientOriginalExtension();
             $picPath = $filePicture->storeAs('dance_costumes/picture', $fileName, 'public');
@@ -95,7 +99,13 @@ class DanceCostumeController extends Controller
         }
 
         if ($request->hasFile('asset_path')) {
-            $assetPath = $request->file('asset_path')->store('dance_costumes/asset', 'public');
+            if ($danceCostume->asset_path) {
+                Storage::disk('public')->delete($danceCostume->asset_path);
+            }
+
+            $assetName = $request->file('asset_path')->getClientOriginalName();
+            $assetName = uniqid() . "-" . Str::snake($assetName);
+            $assetPath = $request->file('asset_path')->storeAs('dance_costumes/assets', $assetName, 'public');
             $danceCostume->update(['asset_path' => $assetPath]);
         }
 

@@ -19,7 +19,9 @@ class DatabaseSeeder extends Seeder
             PermissionRoleSeeder::class,
             DanceTypeSeeder::class,
             DancePartSeeder::class,
+            DancePartVideoSeeder::class,
             DanceSeeder::class,
+            DanceCostumeSeeder::class,
         ]);
     }
 }

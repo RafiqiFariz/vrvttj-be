@@ -18,6 +18,7 @@ class DanceTypeSeeder extends Seeder
             ['name' => 'Putera Tunggal dan Kelompok'],
             ['name' => 'Puteri Tunggal dan Kelompok'],
             ['name' => 'Puteri Kelompok'],
+            ['name' => 'Putera Kelompok'],
             ['name' => 'Duet Berpasangan'],
         ]);
     }

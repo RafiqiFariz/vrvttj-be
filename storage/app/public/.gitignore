@@ -1,2 +1,3 @@
-*
+dance_parts/videos/*
+images/*
 !.gitignore

@@ -51,6 +51,13 @@ class PermissionSeeder extends Seeder
             ['name' => 'dance_part_delete'],
             ['name' => 'dance_part_show'],
 
+            // Dance Part Video Management
+            ['name' => 'dance_part_video_access'],
+            ['name' => 'dance_part_video_create'],
+            ['name' => 'dance_part_video_update'],
+            ['name' => 'dance_part_video_delete'],
+            ['name' => 'dance_part_video_show'],
+
             // Dance Move Management
             ['name' => 'dance_move_access'],
             ['name' => 'dance_move_create'],

@@ -8,8 +8,13 @@ class DancePart extends Model
 {
     protected $guarded = [];
 
-    public function danceMoves()
+    public function danceMoves(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(DanceMove::class);
+    }
+
+    public function dancePartVideos(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(DancePartVideo::class);
     }
 }

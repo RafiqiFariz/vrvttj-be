@@ -4,6 +4,7 @@ use App\Http\Controllers\API\V1\DanceCostumeController;
 use App\Http\Controllers\API\V1\DanceController;
 use App\Http\Controllers\API\V1\DanceMoveController;
 use App\Http\Controllers\API\V1\DancePartController;
+use App\Http\Controllers\API\V1\DancePartVideoController;
 use App\Http\Controllers\API\V1\DanceTypeController;
 use App\Http\Controllers\API\V1\DashboardController;
 use App\Http\Controllers\API\V1\LecturerController;
@@ -32,6 +33,7 @@ Route::group(['prefix' => 'v1'], function () {
             'dance-types' => DanceTypeController::class,
             'dance-moves' => DanceMoveController::class,
             'dance-parts' => DancePartController::class,
+            'dance-parts.videos' => DancePartVideoController::class,
             'dance-costumes' => DanceCostumeController::class,
             'lecturers' => LecturerController::class,
             'students' => StudentController::class,
@@ -45,6 +47,8 @@ Route::group(['prefix' => 'v1'], function () {
             'roles' => RoleController::class,
             'users' => UserController::class,
         ]);
+
+        Route::apiResource('dance-parts.videos', DancePartVideoController::class)->scoped();
 
         Route::post('upload', [UploadImageController::class, 'upload']);
     });
