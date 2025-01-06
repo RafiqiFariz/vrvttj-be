@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
             DancePartVideoSeeder::class,
             DanceSeeder::class,
             DanceCostumeSeeder::class,
+            DanceMoveSeeder::class,
         ]);
     }
 }

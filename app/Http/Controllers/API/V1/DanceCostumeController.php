@@ -94,7 +94,7 @@ class DanceCostumeController extends Controller
 
             $filePicture = $request->file('picture');
             $fileName = uniqid() . "-" . Str::kebab($request->name) . '.' . $filePicture->getClientOriginalExtension();
-            $picPath = $filePicture->storeAs('dance_costumes/picture', $fileName, 'public');
+            $picPath = $filePicture->storeAs('dance_costumes/pictures', $fileName, 'public');
             $danceCostume->update(['picture' => $picPath]);
         }
 
