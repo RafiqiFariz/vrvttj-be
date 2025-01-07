@@ -6,6 +6,7 @@ use App\Filters\V1\DancePartsFilter;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\V1\DancePartRequest;
 use App\Http\Resources\V1\DancePartResource;
+use App\Http\Resources\V1\DancePartVideoResource;
 use App\Models\DancePart;
 use App\Traits\RequestSourceHandler;
 use Illuminate\Http\JsonResponse;
@@ -29,11 +30,26 @@ class DancePartController extends Controller
 
         $paginate = $request->query('paginate');
         $pageSize = $request->query('pageSize', 20);
+        $includeDancePartVideos = $request->query('includeDancePartVideos');
+        $videoOnly = $request->query('videoOnly');
 
         $danceParts = DancePart::where($filterItems);
 
         if ($paginate == 'false' || $paginate == '0') {
             return DancePartResource::collection($danceParts->get());
+        }
+
+        if ($includeDancePartVideos == 'true' || $includeDancePartVideos == '1') {
+            $danceParts = $danceParts->with(['dancePartVideos']);
+        }
+
+        if ($videoOnly == 'true' || $videoOnly == '1') {
+            // ambil semua video dari tiap dance part dan gabungkan dalam satu collection
+            $dancePartVideos = $danceParts->get()->map(function ($dancePart) {
+                return $dancePart->dancePartVideos;
+            })->flatten();
+
+            return DancePartVideoResource::collection($dancePartVideos);
         }
 
         return DancePartResource::collection($danceParts->paginate($pageSize)->appends($request->query()));
