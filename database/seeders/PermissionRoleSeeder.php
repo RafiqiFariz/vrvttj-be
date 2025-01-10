@@ -50,6 +50,7 @@ class PermissionRoleSeeder extends Seeder
             'student_create', 'student_delete', 'student_edit',
             'quiz_attempt_update', 'quiz_attempt_delete',
             'student_result_update', 'student_result_delete',
+            'dance_part_video_create', 'dance_part_video_update', 'dance_part_video_delete',
         ];
 
         $studentPermissions = $this->filterPermissions($permissions, $ignoredPrefixes);
