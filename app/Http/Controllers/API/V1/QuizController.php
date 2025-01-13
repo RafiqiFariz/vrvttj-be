@@ -25,8 +25,13 @@ class QuizController extends Controller
 
         $paginate = $request->query('paginate');
         $pageSize = $request->query('pageSize', 20);
+        $includeQuestions = $request->query('includeQuestions', 'false');
 
         $quizzes = Quiz::where($filterItems);
+
+        if ($includeQuestions == 'true' || $includeQuestions == '1') {
+            $quizzes = $quizzes->with(['questions']);
+        }
 
         if ($paginate == 'false' || $paginate == '0') {
             return QuizResource::collection($quizzes->get());

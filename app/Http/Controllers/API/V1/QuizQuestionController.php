@@ -26,11 +26,11 @@ class QuizQuestionController extends Controller
         $includeQuiz = $request->query('includeQuiz', 'false');
         $includeOptions = $request->query('includeOptions', 'false');
 
-        $quizQuestions = QuizQuestion::query();
+        // Kedepannya bisa diganti dengan route model binding (pakai konsep parent child).
+        // Pakai ini supaya cepat proses developmentnya.
+        $quizId = $request->query('quizID');
 
-        if ($paginate == 'false' || $paginate == '0') {
-            return QuizQuestionResource::collection($quizQuestions->get());
-        }
+        $quizQuestions = QuizQuestion::query();
 
         if ($includeQuiz == 'true' || $includeQuiz == '1') {
             $quizQuestions = $quizQuestions->with('quiz');
@@ -38,6 +38,14 @@ class QuizQuestionController extends Controller
 
         if ($includeOptions == 'true' || $includeOptions == '1') {
             $quizQuestions = $quizQuestions->with('options');
+        }
+
+        if ($quizId) {
+            $quizQuestions = $quizQuestions->where('quiz_id', $quizId);
+        }
+
+        if ($paginate == 'false' || $paginate == '0') {
+            return QuizQuestionResource::collection($quizQuestions->get());
         }
 
         return QuizQuestionResource::collection($quizQuestions->paginate($pageSize)->appends($request->query()));

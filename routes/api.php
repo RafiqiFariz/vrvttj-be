@@ -48,6 +48,8 @@ Route::group(['prefix' => 'v1'], function () {
             'users' => UserController::class,
         ]);
 
+        Route::post('/student-answers/mass', [StudentAnswerController::class, 'massStore'])->name('student-answers.mass');
+
         Route::apiResource('dance-parts.videos', DancePartVideoController::class)->scoped();
 
         Route::post('upload', [UploadImageController::class, 'upload']);

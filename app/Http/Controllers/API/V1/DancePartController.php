@@ -35,10 +35,6 @@ class DancePartController extends Controller
 
         $danceParts = DancePart::where($filterItems);
 
-        if ($paginate == 'false' || $paginate == '0') {
-            return DancePartResource::collection($danceParts->get());
-        }
-
         if ($includeDancePartVideos == 'true' || $includeDancePartVideos == '1') {
             $danceParts = $danceParts->with(['dancePartVideos']);
         }
@@ -50,6 +46,10 @@ class DancePartController extends Controller
             })->flatten();
 
             return DancePartVideoResource::collection($dancePartVideos);
+        }
+
+        if ($paginate == 'false' || $paginate == '0') {
+            return DancePartResource::collection($danceParts->get());
         }
 
         return DancePartResource::collection($danceParts->paginate($pageSize)->appends($request->query()));

@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('quizzes', function (Blueprint $table) {
             $table->id();
             $table->string('title');
+            $table->unsignedSmallInteger('allowed_attempts')->default(1);
             $table->text('description');
             $table->timestamps();
         });

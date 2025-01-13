@@ -30,6 +30,8 @@ class QuizResultController extends Controller
         $pageSize = $request->query('pageSize', 20);
         $includeQuiz = $request->query('includeQuiz', 'false');
         $includeStudent = $request->query('includeStudent', 'false');
+        $quizId = $request->query('quizID');
+        $studentId = $request->query('studentID');
 
         $quizResults = QuizResult::where($filterItems);
 
@@ -39,6 +41,14 @@ class QuizResultController extends Controller
 
         if ($includeStudent == 'true' || $includeStudent == '1') {
             $quizResults = $quizResults->with('student');
+        }
+
+        if ($quizId) {
+            $quizResults = $quizResults->where('quiz_id', $quizId);
+        }
+
+        if ($studentId) {
+            $quizResults = $quizResults->where('student_id', $studentId)->latest();
         }
 
         if ($paginate == 'false' || $paginate == '0') {
